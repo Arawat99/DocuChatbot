@@ -6,7 +6,9 @@ services:
     depends_on:
       - ollama
     volumes:
-      - ./ai-service:/app
+      - ./AI_service:/app
+    stdin_open: true
+    tty: true
 
   ollama:
     image: ollama/ollama
