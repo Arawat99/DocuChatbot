@@ -19,6 +19,45 @@ services:
       - ollama_data:/root/.ollama
     
     restart: unless-stopped
+
+    # Automatic model initialization (optional)
+    # Current model: tinyllama, you can change it to any model you want to use
+    # Uncomment the following block to enable automatic model pulling on startup. This will pull the specified model when the container starts, ensuring it's ready for use.
+    # ollama-init:
+    #   image: ollama/ollama
+    #   command: ["ollama", "pull", "tinyllama"]
+    #   depends_on:
+    #     - ollama
+    #   volumes:
+    #     - ollama_data:/root/.ollama
   
+  postgres:
+    image: postgres:16
+    container_name: postgres-db
+    restart: always
+    environment:
+      - POSTGRES_USER: postgres
+      - POSTGRES_PASSWORD: password
+      - POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:7
+    container_name: mongo-db
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME: root
+      - MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27107"
+    volumes:
+      -  mongodata:/data/db
+
+
 volumes:
   ollama_data:
+  pgdata:
+  mongodata:

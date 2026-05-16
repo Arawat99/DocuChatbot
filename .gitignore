@@ -1,3 +1,4 @@
 .env
 .env.*
 AI_service/venv/
+node_modules/
