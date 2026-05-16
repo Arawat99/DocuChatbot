@@ -1,17 +1,26 @@
+from dotenv import load_dotenv
+from google import genai
 import requests
+import json
+import os
 
+load_dotenv()
 OLLAMA_URL = "http://ollama:11434/api/chat"
 
-MODEL_NAME = "tinyllama"
+OLLAMA_MODEL_NAME = "tinyllama"
 
-messages = []
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-while True:
-    user_input = input("You: ")
+MODE = "cloud"  # local or cloud
 
-    if user_input.lower() in ["exit", "quit"]:
-        print("Exiting the chat.")
-        break
+client = genai.Client(api_key=GEMINI_API_KEY)
+
+GEMINI_MODEL_NAME = "gemini-2.5-flash"
+
+
+def chat_with_ollama(user_input):
+    print("Chatting with Ollama...")
+    messages = []
 
     messages.append(
         {"role": "user",
@@ -22,7 +31,7 @@ while True:
         response = requests.post(
             OLLAMA_URL,
             json={
-                "model": MODEL_NAME,
+                "model": OLLAMA_MODEL_NAME,
                 "messages": messages,
                 "stream": False
             },
@@ -35,7 +44,7 @@ while True:
         if "error" in data:
             print(f"Ollama Error: {data['error']}")
             messages.pop()  # Remove the failed user message
-            continue
+            return
             
         print("Ollama Model: ", data["model"])
         assistant_reply = data["message"]["content"]
@@ -53,3 +62,38 @@ while True:
     except Exception as e:
         print(f"Error: {e}")
         messages.pop()
+
+
+def chat_with_gemini(user_input):
+    print("Chatting with Gemini...")
+
+    chat = client.chats.create(
+        model=GEMINI_MODEL_NAME
+    )
+    
+    try:
+        response = chat.send_message(user_input)
+
+        print("Assistant:", response.text)
+
+    except Exception as e:
+        print("Gemini Error:", e)
+def main():
+    print("Starting AI Service...")
+
+    while True:
+        user_input = input("You: ")
+
+        if user_input.lower() in ["exit", "quit"]:
+            print("Exiting the chat.")
+            break
+        if MODE == "local":
+            chat_with_ollama(user_input)
+        else:
+            chat_with_gemini(user_input)
+
+if __name__ == "__main__":
+    main()
+    print("Exiting the chat.")
+
+
