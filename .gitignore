@@ -2,3 +2,5 @@
 .env.*
 AI_service/venv/
 node_modules/
+__pycache__/
+*.pyc
