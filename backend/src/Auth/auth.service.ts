@@ -13,7 +13,7 @@ export const signup = async (username: string, email: string, password: string) 
     const newUser = await repo.createUser(username, email, hashedPassword);
 
     const token = jwt.sign({ 
-        userId: newUser.id,
+        accountId: newUser.id,
         username: newUser.username,
         email: newUser.email
     },
@@ -37,7 +37,7 @@ export const login = async (email: string, password: string) => {
     }
 
     const token = jwt.sign({ 
-          userId: user.id,
+          accountId: user.id,
           username: user.username,
           email: user.email
         },
