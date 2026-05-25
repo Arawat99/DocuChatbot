@@ -1,10 +1,10 @@
 import express from "express";
 import cors from "cors"
 
+import authRoutes from "./Auth/auth.routes.js";
 
 
 const app = express();
-
 
 app.use(express.json());
 app.use(
@@ -12,6 +12,7 @@ app.use(
         origin: "*"
     })
 )
+app.use("/auth", authRoutes);
 
 
 
