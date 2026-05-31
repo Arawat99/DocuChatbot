@@ -4,8 +4,9 @@ import requests
 import json
 import os
 
+
 load_dotenv()
-OLLAMA_URL = "http://ollama:11434/api/chat"
+OLLAMA_URL = "http://localhost:11434/api/chat"
 
 OLLAMA_MODEL_NAME = "tinyllama"
 
@@ -44,15 +45,21 @@ def chat_with_ollama(user_input):
             messages.pop()  # Remove the failed user message
             return
             
-        print("Ollama Model: ", data["model"])
+        # print("Ollama Model: ", data["model"])
         assistant_reply = data["message"]["content"]
 
-        print(f"Assistant: {assistant_reply}")
+        # print(f"Assistant: {assistant_reply}")
 
-        messages.append({
-            "role": "assistant",
-            "content": assistant_reply
-        })
+        # messages.append({
+        #     "role": "assistant",
+        #     "content": assistant_reply
+        # })
+
+        return {
+            "message": assistant_reply,
+            "model": data["model"]
+        }
+    
     except requests.exceptions.ConnectionError as e:
         print(f"Connection Error: Cannot reach Ollama at {OLLAMA_URL}")
         print(f"Details: {e}")
@@ -72,7 +79,12 @@ def chat_with_gemini(user_input):
     try:
         response = chat.send_message(user_input)
 
-        print("Assistant:", response.text)
+        # print("Assistant:", response.text)
+
+        return {
+            "message": response.text,
+            "model": GEMINI_MODEL_NAME
+        }
 
     except Exception as e:
         print("Gemini Error:", e)
