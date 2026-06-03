@@ -3,8 +3,8 @@ from typing import List, Literal
 
 
 class ChatRequest(BaseModel):
-    message: str
     model: Literal['ollama', 'gemini'] = Field(..., description="The model to use for the chat response. Options: 'ollama' or 'gemini'.")
+    message: str
 
 
 class ChatResponse(BaseModel):

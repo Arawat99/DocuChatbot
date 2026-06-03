@@ -13,6 +13,15 @@ const chatSessionSchema = new mongoose.Schema({
         default: "tinyllama" 
     },
     messages: [{
+        messageId: {
+            type: String,
+            default: () => new mongoose.Types.ObjectId().toString(),
+            unique: true,
+        },
+        sequence: { 
+            type: Number, 
+            required: true,
+        },
         role: { 
             type: String, 
             enum: ["user", "assistant", "system"], 
