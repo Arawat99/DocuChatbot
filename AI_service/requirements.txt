@@ -3,3 +3,6 @@ google-genai
 fastapi
 python-dotenv
 uvicorn
+pypdf
+python-multipart
+sentence-transformers

@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from ingest.loader import process_uploaded_file
+from fastapi import FastAPI, UploadFile, File, Form
 from Model.schema import ChatRequest, ChatResponse
 from LLM.chat import chat_with_ollama, chat_with_gemini
 
@@ -16,6 +17,10 @@ async def chat(request: ChatRequest):
         return ChatResponse(response=result["message"], model=result["model"])
     else:
         return ChatResponse(response="Invalid model specified.", model=request.model)
+    
+@app.post("/upload")
+async def upload_file(user_id: str = Form(...), description: str = Form(...), file: UploadFile = File(...)):
+    return await process_uploaded_file(file, user_id, description)
     
 @app.get("/")
 async def root():
