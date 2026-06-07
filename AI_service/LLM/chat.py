@@ -69,7 +69,7 @@ def chat_with_ollama(user_input):
         messages.pop()
 
 
-def chat_with_gemini(user_input):
+def chat_with_gemini(user_input, context=None):
     print("Chatting with Gemini...")
 
     chat = client.chats.create(

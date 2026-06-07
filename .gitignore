@@ -1,6 +1,8 @@
 .env
 .env.*
 AI_service/venv/
+AI_service/models/
+AI_service/uploads/
 node_modules/
 __pycache__/
 *.pyc

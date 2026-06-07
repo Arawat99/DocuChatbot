@@ -75,6 +75,15 @@ services:
     
     restart: unless-stopped
 
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant-db
+    restart: always
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
 
 
 volumes:
@@ -82,3 +91,4 @@ volumes:
   pgdata:
   mongodata:
   minio_data:
+  qdrant_data:

@@ -1,5 +1,22 @@
 from pypdf import PdfReader
+from pathlib import Path
+import fitz
 
+
+def extract_document_stream(file_path: str):
+    doc = fitz.open(file_path)
+    
+    for page_num, page in enumerate(doc):
+        text = page.get_text("text")
+
+        yield {
+            "page": page_num + 1,
+            "text": text,
+            "metadata": {
+                "file_name": Path(file_path).name,
+                "source_type": Path(file_path).suffix,
+            }
+        }
 
 def extract_text(file_path: str, content_type: str) -> str:
     if content_type == "application/pdf":

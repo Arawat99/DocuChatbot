@@ -19,8 +19,8 @@ async def chat(request: ChatRequest):
         return ChatResponse(response="Invalid model specified.", model=request.model)
     
 @app.post("/upload")
-async def upload_file(user_id: str = Form(...), description: str = Form(...), file: UploadFile = File(...)):
-    return await process_uploaded_file(file, user_id, description)
+async def upload_file(user_id: str = Form(...), query: str = Form(...), file: UploadFile = File(...)):
+    return await process_uploaded_file(file, user_id, query)
     
 @app.get("/")
 async def root():
