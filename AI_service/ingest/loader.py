@@ -3,25 +3,25 @@ from processors.text_extractor import extract_text, extract_document_stream
 from utils.chunker import chunk_text
 from embeddings.base import get_embedding
 from db.qdrant_client import insert_chunks, search_vector, document_exists_by_hash
+from LLM.chat import chat_with_gemini, rewrite_query
 
 
 async def process_uploaded_file(file, user_id: str, query: str) -> dict:
     file_path, file_hash = await save_file(file)
     total_chunks = await ingest_document_pages(file_path=file_path, file_hash=file_hash, user_id=user_id)
+
     if total_chunks == 0:
         return empty_response(query, file_path)
 
-    query_vector = get_embedding(query)
+    rewritten_query = rewrite_query(query)
+    query_vector = get_embedding(rewritten_query)
     similarity_results = await search_vector(query_vector)
 
-    print("Query:", query)
-    print(f"Similarity search results: {similarity_results}")
-
+    response = chat_with_gemini(rewritten_query, similarity_results)
     return {
-        "message": "File uploaded successfully.",
         "query": query,
-        "file_path": file_path,
-        "num_chunks": total_chunks
+        "response": response,
+        "context": similarity_results
     }
 
 

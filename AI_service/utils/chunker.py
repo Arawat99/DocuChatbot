@@ -1,21 +1,34 @@
 from embeddings.base import get_tokenizer
+import re
 
 tokenizer = get_tokenizer()
 
-def chunk_text(text: str, max_tokens: int = 512, overlap: int = 64):
-    tokens = tokenizer.encode(text)
+
+def clean_text(text: str) -> str:
+    if text is None:
+        return ""
+
+    text = text.replace("[CLS]", " ").replace("[SEP]", " ")
+    text = re.sub(r"\s+", " ", text)
+    return text.strip()
+
+
+def tokenize(text: str):
+    text = clean_text(text)
+    return tokenizer.encode(text)
+
+def chunk_text(text, max_chars=1000, overlap=200):
+    text = clean_text(text)
 
     chunks = []
     start = 0
 
-    while start < len(tokens):
-        end = min(start + max_tokens, len(tokens))
-        chunk = tokenizer.decode(tokens[start:end])
-        if len(chunk) > 20:
-            chunks.append(chunk)
+    while start < len(text):
+        end = start + max_chars
+        chunk = text[start:end]
 
-        if end == len(tokens):
-            break
+        chunks.append(chunk)
 
-        start += max_tokens - overlap
+        start += max_chars - overlap
+
     return chunks

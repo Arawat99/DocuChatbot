@@ -35,6 +35,7 @@ async def insert_chunks(chunks: list[str], vectors: list[list[float]], document_
             "file_path": file_path,
             "chunk_index": i,
             "hash": hash,
+            "source": f"{document_metadata.get('file_name', 'unknown')} page {document_metadata.get('page', '?')}",
             "metadata": document_metadata
         }
         points.append(
@@ -75,6 +76,11 @@ async def search_vector(vector: list[float], top_k: int = 10):
     return [{
         "id": result.id,
         "score": result.score,
-        "text": result.payload.get("text", "")
+        "text": result.payload.get("text", ""),
+        "source": result.payload.get("source", "unknown"),
+        "file_path": result.payload.get("file_path"),
+        "chunk_index": result.payload.get("chunk_index"),
+        "user_id": result.payload.get("user_id"),
+        "metadata": result.payload.get("metadata", {})
     } for result in search_result.points]
 
